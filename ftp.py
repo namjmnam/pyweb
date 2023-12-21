@@ -6,8 +6,14 @@ def main():
     # Instantiate a dummy authorizer for managing 'virtual' users
     authorizer = DummyAuthorizer()
 
+    # Define the directory to be shared over FTP for anonymous users
+    shared_directory = "./sharedfiles"
+
     # Add a user with full permissions (change 'username' and 'password' to desired values)
-    authorizer.add_user("username", "password", "./sharedfiles", perm="elradfmw")
+    authorizer.add_user("admin", "", shared_directory, perm="elradfmw")
+
+    # Add permission for anonymous access (read-only in this example)
+    authorizer.add_anonymous(shared_directory, perm="elr")
 
     # Instantiate FTP handler and link it to the authorizer
     handler = FTPHandler
