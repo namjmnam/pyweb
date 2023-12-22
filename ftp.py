@@ -1,6 +1,7 @@
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
+import sys
 
 def main():
     # Instantiate a dummy authorizer for managing 'virtual' users
@@ -13,7 +14,7 @@ def main():
     authorizer.add_user("admin", "", shared_directory, perm="elradfmw")
 
     # Add permission for anonymous access (read-only in this example)
-    authorizer.add_anonymous(shared_directory, perm="elr")
+    authorizer.add_anonymous(shared_directory, perm="elradfmw")
 
     # Instantiate FTP handler and link it to the authorizer
     handler = FTPHandler
@@ -23,9 +24,15 @@ def main():
     port = 21
 
     # Instantiate and start the FTP server
-    server = FTPServer(("0.0.0.0", port), handler)
-    print(f"FTP server running on port {port}")
-    server.serve_forever()
+    server = FTPServer(("0.0.0.0", port), handler)    
+    try:
+        print(f"FTP server running on port {port}")
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nShutting down the server...")
+        server.close_all()
+        print("Server successfully shut down.")
+        sys.exit()
 
 if __name__ == "__main__":
     main()
