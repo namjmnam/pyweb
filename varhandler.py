@@ -2,6 +2,11 @@ import pickle
 import ftplib
 import io
 
+# Prevent IDE error message (trivial)
+key1 = ''
+key2 = ''
+key3 = ''
+
 def send_var_to_ftp(variable, ftp_server, remote_path, ftp_username='anonymous', ftp_password='user@example.com'):
     """
     Save a variable to an in-memory file and send it to an FTP server using anonymous login.
@@ -43,7 +48,7 @@ def retrieve_vars_from_ftp(ftp_server, remote_path, ftp_username='anonymous', ft
 
         # Load the variables from the in-memory file
         variables = pickle.load(in_memory_file)
-        print(variables)
+        return variables
 
 # Example usage
 my_data = {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
@@ -54,4 +59,12 @@ remote_file_path = 'remote_filename.pkl'
 
 # Save the variable and send it to FTP using anonymous login
 send_var_to_ftp(my_data, ftp_server_address, remote_file_path)
-retrieve_vars_from_ftp(ftp_server_address, remote_file_path)
+retrieved_data = retrieve_vars_from_ftp(ftp_server_address, remote_file_path)
+
+for key, value in retrieved_data.items():
+    globals()[key] = value
+
+# Retrieved data
+print(key1)
+print(key2)
+print(key3)
