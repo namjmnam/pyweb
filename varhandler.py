@@ -1,5 +1,6 @@
 import pickle
 import ftplib
+import io
 
 def save_var(variable, filename):
     """
@@ -53,14 +54,35 @@ def retrieve_and_print_file_from_ftp(ftp_server, ftp_username, ftp_password, rem
         with open('temp_file', 'r') as file:
             print(file.read())
 
+def save_var_and_send_to_ftp(variable, ftp_server, ftp_username, ftp_password, remote_path):
+    """
+    Save a variable to an in-memory file and send it to an FTP server.
+
+    :param variable: The variable to be saved and sent.
+    :param ftp_server: FTP server address.
+    :param ftp_username: FTP username.
+    :param ftp_password: FTP password.
+    :param remote_path: Remote path where the file will be saved on the server.
+    """
+    # Serialize the variable to an in-memory file
+    in_memory_file = io.BytesIO()
+    pickle.dump(variable, in_memory_file)
+    in_memory_file.seek(0)  # Rewind the file to the beginning
+
+    # Send the in-memory file to the FTP server
+    with ftplib.FTP(ftp_server) as ftp:
+        ftp.login(user=ftp_username, passwd=ftp_password)
+        # Use STOR command to upload the file
+        ftp.storbinary('STOR ' + remote_path, in_memory_file)
+
 # Example usage
 my_data = {'key1': 'value1', 'key2': 'value2'}
-filename = 'saved_data.pkl'
 
-# Save the variable
-save_var(my_data, filename)
+# FTP server details
+ftp_server_address = 'localhost'
+ftp_username = ''
+ftp_password = ''
+remote_file_path = 'remote_filename.pkl'
 
-# Load the variable
-loaded_data = load_var(filename)
-print(loaded_data)
-
+# Save the variable and send it to FTP
+save_var_and_send_to_ftp(my_data, ftp_server_address, ftp_username, ftp_password, remote_file_path)
