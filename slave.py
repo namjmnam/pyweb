@@ -88,7 +88,7 @@ def main():
 
         # Perform computation
         result = find_primes_in_range(start_range, end_range)
-        print(f"Primes in range {start_range}-{end_range}:\n{result}")
+        print(f"Primes in range {start_range}-{end_range}:\n")
 
         my_data = {'result': result}
 
@@ -108,4 +108,4 @@ for key, value in retrieved_data.items():
     globals()[key] = value
 
 # Retrieved data
-# print(result)
+print(result)

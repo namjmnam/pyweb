@@ -12,6 +12,7 @@ class Server:
 
     def handle_client(self, client_socket, client_id):
         # Send data to clients
+        # Issue: needs to make these global variables
         interval = 1000
         start_range = client_id * interval + 1
         end_range = start_range + interval - 1
