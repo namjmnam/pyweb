@@ -87,7 +87,7 @@ def main():
         start_range, end_range = map(int, data.split('-'))
 
         # Perform computation
-        result = find_primes_in_range(start_range, end_range)
+        result = old_result + find_primes_in_range(start_range, end_range)
         print(f"Primes in range {start_range}-{end_range}:\n")
 
         my_data = {'result': result}
@@ -100,12 +100,22 @@ def main():
         client_socket.close()
 
 if __name__ == "__main__":
+    # Try to access FTP
+    try:
+        retrieved_data = retrieve_vars_from_ftp(ftp_server_address, remote_file_path)
+
+        for key, value in retrieved_data.items():
+            globals()[key] = value
+        old_result = result
+
+    # If There is no pkl file
+    except:
+        old_result = []
+        print("Starting fresh")
     main()
 
+# Retrieved data (test if successful)
 retrieved_data = retrieve_vars_from_ftp(ftp_server_address, remote_file_path)
-
 for key, value in retrieved_data.items():
     globals()[key] = value
-
-# Retrieved data
 print(result)
